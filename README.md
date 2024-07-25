@@ -45,8 +45,10 @@ This will create a generic class implementing `IDataContext<T>` for you to reduc
 
 
 ## Future work
-Check out [the project page](https://github.com/users/luke-bunyan/projects/1/views/1). I can't make any promises on how long
-this will be maintained for!
+- Service bus to message broker to work alongside queue processor
+- Unit tests for core services
+- Data caching
+- Create NoSQL base data context
 
 
 
