@@ -1,0 +1,6 @@
+@PocketMoney_HostAddress = http://localhost:5197
+
+GET {{PocketMoney_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
