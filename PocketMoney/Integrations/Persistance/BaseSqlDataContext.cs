@@ -7,7 +7,7 @@ using PocketMoney.Exceptions;
 
 namespace PocketMoney.Integrations.Persistance;
 
-public abstract class BaseDataContext<T>(
+public abstract class BaseSqlDataContext<T>(
     MySqlConnection context,
     IConfiguration configuration,
     string schemaName,

@@ -17,7 +17,7 @@ public class DataContextFactory(IServiceProvider serviceProvider, MySqlConnectio
                 typeof(SqlDataAttribute), true
             ).FirstOrDefault() as SqlDataAttribute ?? throw new DataContextFactoryException(typeof(T).Name);
 
-            service = new GenericData<T>(context, configuration, attributes.SchemaName, attributes.Database,
+            service = new GenericSqlData<T>(context, configuration, attributes.SchemaName, attributes.Database,
                 attributes.KeyColumnName);
         }
 

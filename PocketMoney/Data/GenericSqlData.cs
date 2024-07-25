@@ -4,7 +4,7 @@ using PocketMoney.Models;
 
 namespace PocketMoney.Data;
 
-public class GenericData<T>(MySqlConnection context, IConfiguration configuration, string schemaName, string database, string keyColumnName) : BaseDataContext<T>(context,
+public class GenericSqlData<T>(MySqlConnection context, IConfiguration configuration, string schemaName, string database, string keyColumnName) : BaseSqlDataContext<T>(context,
     configuration,
     schemaName: schemaName,
     database: database,

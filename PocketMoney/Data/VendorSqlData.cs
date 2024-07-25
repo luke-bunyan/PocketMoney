@@ -4,7 +4,7 @@ using PocketMoney.Models.Accounting;
 
 namespace PocketMoney.Data;
 
-public class VendorData(MySqlConnection context, IConfiguration configuration) : BaseDataContext<Vendor>(context,
+public class VendorSqlData(MySqlConnection context, IConfiguration configuration) : BaseSqlDataContext<Vendor>(context,
     configuration,
     schemaName: "PocketMoney",
     database: "Vendors",

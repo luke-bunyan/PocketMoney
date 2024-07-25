@@ -4,7 +4,7 @@ using PocketMoney.Models.Accounting;
 
 namespace PocketMoney.Data;
 
-public class AllocationData(MySqlConnection context, IConfiguration configuration) : BaseDataContext<Allocation>(context,
+public class AllocationSqlData(MySqlConnection context, IConfiguration configuration) : BaseSqlDataContext<Allocation>(context,
     configuration,
     schemaName: "PocketMoney",
     database: "Allocations",
