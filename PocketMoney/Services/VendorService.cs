@@ -22,7 +22,7 @@ public class VendorService(IDataContextFactory dataContextFactory, IProductServi
     public async Task<Vendor> GetVendorAsync(string name)
     {
         var vendors = await dataContextFactory.Get<Vendor>().GetAllEntriesAsync(
-            new Dictionary<string, dynamic>()
+            new Dictionary<string, dynamic?>()
             {
                 {"Name", name}
             });
@@ -35,7 +35,7 @@ public class VendorService(IDataContextFactory dataContextFactory, IProductServi
         var vendorContext = dataContextFactory.Get<Vendor>();
 
         if ((await vendorContext.GetAllEntriesAsync(
-                new Dictionary<string, dynamic>
+                new Dictionary<string, dynamic?>
                 {
                     {"Name", request.Name}
                 })).Any())

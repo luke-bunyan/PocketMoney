@@ -6,13 +6,11 @@ using PocketMoney.Models.Classification;
 
 namespace PocketMoney.Services;
 
-public class TransactionService(IAccountService accountService, IDataContextFactory dataContextFactory) : ITransactionService
+public class TransactionService(IAccountService accountService, IDataContextFactory dataContextFactory, IAllocationService allocationService) : ITransactionService
 {
     public async Task<Transaction?> GetTransactionAsync(int transactionId)
     {
         var transaction = await dataContextFactory.Get<Transaction>().GetEntryAsync(transactionId);
-
-        transaction.Allocations = await GetAllocationsAsync(transaction.TransactionId);
 
         return transaction;
     }
@@ -21,26 +19,16 @@ public class TransactionService(IAccountService accountService, IDataContextFact
     {
         var transactions = (await dataContextFactory.Get<Transaction>().GetAllEntriesAsync()).ToList();
 
-        foreach (var transaction in transactions)
-        {
-            transaction.Allocations = await GetAllocationsAsync(transaction.TransactionId);
-        }
-
         return transactions;
     }
 
     public async Task<IEnumerable<Transaction>> GetTransactionsAsync(Account account)
     {
         var transactions = (await dataContextFactory.Get<Transaction>().GetAllEntriesAsync(
-            new Dictionary<string, dynamic>()
+            new Dictionary<string, dynamic?>()
             {
                 {"AccountId", account.AccountId}
             })).ToList();
-
-        foreach (var transaction in transactions)
-        {
-            transaction.Allocations = await GetAllocationsAsync(transaction.TransactionId);
-        }
 
         return transactions;
     }
@@ -48,15 +36,10 @@ public class TransactionService(IAccountService accountService, IDataContextFact
     public async Task<IEnumerable<Transaction>> GetTransactionsAsync(Category category)
     {
         var transactions = (await dataContextFactory.Get<Transaction>().GetAllEntriesAsync(
-            new Dictionary<string, dynamic>()
+            new Dictionary<string, dynamic?>()
             {
                 {"CategoryId", category.CategoryId}
             })).ToList();
-
-        foreach (var transaction in transactions)
-        {
-            transaction.Allocations = await GetAllocationsAsync(transaction.TransactionId);
-        }
 
         return transactions;
     }
@@ -64,7 +47,7 @@ public class TransactionService(IAccountService accountService, IDataContextFact
     public async Task<IEnumerable<Transaction>> GetTransactionsAsync(Vendor vendor)
     {
         return await dataContextFactory.Get<Transaction>().GetAllEntriesAsync(
-            new Dictionary<string, dynamic>()
+            new Dictionary<string, dynamic?>()
             {
                 {"VendorId", vendor.VendorId}
             });
@@ -104,7 +87,7 @@ public class TransactionService(IAccountService accountService, IDataContextFact
         return await GetTransactionAsync(createdTransaction.TransactionId);
     }
 
-    public async Task<Transaction> UpdateTransactionAllocationAsync(Transaction transaction, IEnumerable<AllocationRequest> allocations)
+    public async Task<Transaction> UpdateTransactionAllocationAsync(Transaction transaction, List<AllocationRequest> allocations)
     {
         var currentTransaction = await GetTransactionAsync(transaction.TransactionId) ?? throw new ArgumentException($"Transaction {transaction.TransactionId} does not exist");
 
@@ -119,9 +102,11 @@ public class TransactionService(IAccountService accountService, IDataContextFact
 
         var allocationContext = dataContextFactory.Get<Allocation>();
 
-        if (currentTransaction.Allocations.Any())
+        var currentAllocations = await allocationService.GetAllocationsAsync(transaction.TransactionId);
+
+        if (currentAllocations.Any())
         {
-            foreach (var allocation in currentTransaction.Allocations)
+            foreach (var allocation in currentAllocations)
             {
                 await allocationContext.RemoveEntryAsync(allocation.AllocationId);
             }
@@ -148,7 +133,7 @@ public class TransactionService(IAccountService accountService, IDataContextFact
     private async Task<IEnumerable<Allocation>> GetAllocationsAsync(int transactionId)
     {
         return await dataContextFactory.Get<Allocation>().GetAllEntriesAsync(
-            new Dictionary<string, dynamic>()
+            new Dictionary<string, dynamic?>()
             {
                 {"TransactionId", transactionId}
             });

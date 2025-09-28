@@ -10,7 +10,6 @@ namespace PocketMoney.Integrations.Persistance;
 public abstract class BaseSqlDataContext<T>(
     MySqlConnection context,
     IConfiguration configuration,
-    string schemaName,
     string database,
     string keyColumnName,
     string connectionName = "Default")
@@ -32,14 +31,14 @@ public abstract class BaseSqlDataContext<T>(
     public virtual IEnumerable<T> GetAllEntries(IDictionary<string, dynamic>? filters)
     {
         OpenConnection();
-        string query = $"select * from {schemaName}.{database} {CreateFilterConditions(filters)}";
+        string query = $"select * from {database} {CreateFilterConditions(filters)}";
         return context.Query<T>(query);
     }
 
     public virtual async Task<IEnumerable<T>> GetAllEntriesAsync(Dictionary<string, dynamic?> filters)
     {
         OpenConnection();
-        string query = $"select * from {schemaName}.{database} {CreateFilterConditions(filters)}";
+        string query = $"select * from {database} {CreateFilterConditions(filters)}";
         return await context.QueryAsync<T>(query);
     }
 
@@ -62,7 +61,7 @@ public abstract class BaseSqlDataContext<T>(
     public virtual T GetEntry(T entry)
     {
         OpenConnection();
-        string query = $"SELECT * FROM {schemaName}.{database} {CreateFilterConditions(entry)}";
+        string query = $"SELECT * FROM {database} {CreateFilterConditions(entry)}";
 
         return context.QuerySingle<T>(query);
     }
@@ -70,7 +69,7 @@ public abstract class BaseSqlDataContext<T>(
     public virtual T SaveEntry(T entry)
     {
         OpenConnection();
-        string query = $"INSERT INTO {schemaName}.{database} VALUES ({CreateValueArray(entry)}); SELECT LAST_INSERT_ID();";
+        string query = $"INSERT INTO {database} VALUES ({CreateValueArray(entry)}); SELECT LAST_INSERT_ID();";
 
         var insertedEntry = context.QuerySingle<int>(query);
 
@@ -80,7 +79,7 @@ public abstract class BaseSqlDataContext<T>(
     public virtual async Task<T> SaveEntryAsync(T entry)
     {
         OpenConnection();
-        string query = $"INSERT INTO {schemaName}.{database} VALUES ({CreateValueArray(entry)}); SELECT LAST_INSERT_ID();";
+        string query = $"INSERT INTO {database} VALUES ({CreateValueArray(entry)}); SELECT LAST_INSERT_ID();";
 
         var insertedEntry = context.QuerySingle<int>(query);
 
@@ -90,7 +89,7 @@ public abstract class BaseSqlDataContext<T>(
     public virtual void RemoveEntry(int entryId)
     {
         OpenConnection();
-        string query = $"DELETE FROM {schemaName}.{database} WHERE {keyColumnName} = {entryId};";
+        string query = $"DELETE FROM {database} WHERE {keyColumnName} = {entryId};";
 
         context.Execute(query);
     }
@@ -98,7 +97,7 @@ public abstract class BaseSqlDataContext<T>(
     public virtual async Task RemoveEntryAsync(int entryId)
     {
         OpenConnection();
-        string query = $"DELETE FROM {schemaName}.{database} WHERE {keyColumnName} = {entryId};";
+        string query = $"DELETE FROM {database} WHERE {keyColumnName} = {entryId};";
 
         await context.ExecuteAsync(query);
     }
@@ -106,7 +105,7 @@ public abstract class BaseSqlDataContext<T>(
     public virtual T UpdateEntry(int entryId, IDictionary<string, dynamic> updates)
     {
         OpenConnection();
-        string query = $"UPDATE {schemaName}.{database} SET {CreateFilterConditions(updates)} WHERE {keyColumnName} = {entryId}";
+        string query = $"UPDATE {database} SET {CreateFilterConditions(updates)} WHERE {keyColumnName} = {entryId}";
         context.Execute(query);
 
         return GetEntry(entryId);
@@ -115,7 +114,7 @@ public abstract class BaseSqlDataContext<T>(
     public virtual async Task<T> UpdateEntryAsync(int entryId, IDictionary<string, dynamic> updates)
     {
         OpenConnection();
-        string query = $"UPDATE {schemaName}.{database} SET {CreateFilterConditions(updates)} WHERE {keyColumnName} = {entryId}";
+        string query = $"UPDATE {database} SET {CreateFilterConditions(updates)} WHERE {keyColumnName} = {entryId}";
         await context.ExecuteAsync(query);
 
         return await GetEntryAsync(entryId);

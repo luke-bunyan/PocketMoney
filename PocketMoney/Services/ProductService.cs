@@ -31,7 +31,7 @@ public class ProductService(IDataContextFactory dataContextFactory) : IProductSe
         try
         {
             var mapping = (await dataContextFactory.Get<VendorProductMapping>().GetAllEntriesAsync(
-                new Dictionary<string, dynamic>()
+                new Dictionary<string, dynamic?>()
                 {
                     {"VendorId", vendorId},
                     {"TillCode", tillCode},
@@ -47,20 +47,20 @@ public class ProductService(IDataContextFactory dataContextFactory) : IProductSe
         }
     }
 
-    public async Task<Product> CreateAccountAsync(ProductRequest product)
+    public async Task<Product> CreateProductAsync(ProductRequest product)
     {
-        if (await DoesAccountExistAsync(product)) throw new ArgumentException($"product already exists");
+        if (await DoesProductExistAsync(product)) throw new ArgumentException($"product already exists");
 
-        if (product.Title == null) throw new ArgumentException($"Minimum product data not provided");
+        AssertProductRequestIsValid(product);
 
         return await dataContextFactory.Get<Product>().SaveEntryAsync(new Product
         {
-            EanCode = product.EanCode,
+            EanCode = product.EanCode!,
             Title = product.Title,
-            Manufacturer = product.EanCode,
-            Brand = product.Brand,
-            Model = product.Model,
-            Description = product.Description
+            Manufacturer = product.EanCode!,
+            Brand = product.Brand!,
+            Model = product.Model!,
+            Description = product.Description!
         });
     }
 
@@ -71,7 +71,7 @@ public class ProductService(IDataContextFactory dataContextFactory) : IProductSe
         await dataContextFactory.Get<Product>().RemoveEntryAsync(product.ProductId);
     }
 
-    private async Task<bool> DoesAccountExistAsync(ProductRequest product)
+    private async Task<bool> DoesProductExistAsync(ProductRequest product)
     {
         //TODO: Update this to filter dynamically based passed object
         return (await dataContextFactory.Get<Product>().GetAllEntriesAsync(new Dictionary<string, dynamic>()
@@ -81,13 +81,8 @@ public class ProductService(IDataContextFactory dataContextFactory) : IProductSe
         })).Any();
     }
 
-    private async Task<bool> DoesAccountExistAsync(Product product)
+    private void AssertProductRequestIsValid(ProductRequest product)
     {
-        //TODO: Update this to filter dynamically based passed object
-        return (await dataContextFactory.Get<Product>().GetAllEntriesAsync(new Dictionary<string, dynamic>()
-        {
-            {"Title", product.Title},
-            {"EanCode", product.EanCode},
-        })).Any();
+        if (product.Title == null) throw new ArgumentException($"Minimum product data not provided");
     }
 }

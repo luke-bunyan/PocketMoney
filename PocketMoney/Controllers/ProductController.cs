@@ -32,7 +32,7 @@ public class ProductController(IProductService productService) : ControllerBase
     {
         try
         {
-            return Ok(await productService.CreateAccountAsync(product));
+            return Ok(await productService.CreateProductAsync(product));
         }
         catch (ArgumentException ex)
         {

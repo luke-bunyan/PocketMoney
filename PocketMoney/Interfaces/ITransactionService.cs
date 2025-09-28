@@ -18,7 +18,5 @@ public interface ITransactionService
 
     Task<Transaction> CreateTransactionAsync(TransactionRequest transaction);
 
-    Task<Transaction> UpdateTransactionAllocationAsync(Transaction transaction, IEnumerable<AllocationRequest> allocations);
-
     Task RemoveTransaction(Transaction transaction);
 }

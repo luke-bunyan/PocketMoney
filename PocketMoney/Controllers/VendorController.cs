@@ -55,7 +55,7 @@ public class VendorController(IVendorService vendorService, ITransactionService 
         return Ok(await transactionService.GetTransactionsAsync(vendor));
     }
 
-    [HttpPost("{vendorId}/Till/Product")]
+    [HttpPost("{vendorId}/Product")]
     public async Task<IActionResult> CreateVendorTillProducts([FromBody]VendorProductMappingRequest productMapping)
     {
         try
@@ -69,7 +69,7 @@ public class VendorController(IVendorService vendorService, ITransactionService 
         }
     }
 
-    [HttpGet("{vendorId}/Till/Product/{tillCode}")]
+    [HttpGet("{vendorId}/Product/{tillCode}")]
     public async Task<IActionResult> CreateVendorTillProducts(int vendorId, string tillCode)
     {
         try

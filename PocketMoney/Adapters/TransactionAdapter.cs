@@ -4,7 +4,7 @@ using PocketMoney.Models.Accounting.Responses;
 
 namespace PocketMoney.Adapters;
 
-public class TransactionAdapter(IAccountService accountService, IVendorService vendorService, ICategoryService categoryService, IProductService productService) : IAdapter<TransactionResponse, Transaction>
+public class TransactionAdapter(IAccountService accountService, IVendorService vendorService, ICategoryService categoryService, IProductService productService, IAllocationService allocationService) : IAdapter<TransactionResponse, Transaction>
 {
     public async Task<TransactionResponse> Adapt(Transaction request)
     {
@@ -28,7 +28,7 @@ public class TransactionAdapter(IAccountService accountService, IVendorService v
         response.CategoryName = categoryName;
 
         var allocations = new List<AllocationResponse>();
-        foreach (var allocation in request.Allocations)
+        foreach (var allocation in await allocationService.GetAllocationsAsync(request.TransactionId))
         {
             allocations.Add(new AllocationResponse(allocation)
             {

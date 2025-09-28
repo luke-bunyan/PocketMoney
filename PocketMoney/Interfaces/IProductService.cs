@@ -9,7 +9,7 @@ public interface IProductService
 
     Task<Product?> GetProductAsync(int? productId);
 
-    Task<Product> CreateAccountAsync(ProductRequest product);
+    Task<Product> CreateProductAsync(ProductRequest product);
 
     Task DeleteProductAsync(int productId);
 

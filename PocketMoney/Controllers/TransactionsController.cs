@@ -8,7 +8,9 @@ namespace PocketMoney.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class TransactionController(ITransactionService transactionService, IAdapter<TransactionResponse, Transaction> transactionAdapter) : ControllerBase
+public class TransactionsController(ITransactionService transactionService,
+    IAdapter<TransactionResponse, Transaction> transactionAdapter,
+    IAllocationService allocationService) : ControllerBase
 {
     [HttpGet("All")]
     public async Task<IActionResult> GetAllTransactions()
@@ -69,7 +71,7 @@ public class TransactionController(ITransactionService transactionService, IAdap
 
         try
         {
-            return Ok(await transactionService.UpdateTransactionAllocationAsync(transaction, allocations));
+            return Ok(await allocationService.SetAllocationsAsync(transaction, allocations.ToList()));
         }
         catch (ArgumentException ex)
         {

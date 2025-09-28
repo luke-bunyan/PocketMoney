@@ -13,4 +13,6 @@ public interface IAccountService
     Task DeleteAccountAsync(int accountId);
 
     Task<Account> CreateAccountAsync(Account account);
+
+    Task<bool> DoesAccountExistAsync(Account account);
 }

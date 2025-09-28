@@ -10,5 +10,5 @@ public class TransactionRequest
 
     public int? CategoryId { get; set; }
 
-    public virtual IEnumerable<AllocationRequest> Allocations { get; set; }
+    public virtual List<AllocationRequest> Allocations { get; set; }
 }

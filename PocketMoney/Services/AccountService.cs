@@ -48,10 +48,10 @@ public class AccountService(IDataContextFactory dataContextFactory) : IAccountSe
         await dataContextFactory.Get<Account>().RemoveEntryAsync(account.AccountId);
     }
 
-    private async Task<bool> DoesAccountExistAsync(Account account)
+    public async Task<bool> DoesAccountExistAsync(Account account)
     {
         //TODO: Update this to filter dynamically based passed object
-        return (await dataContextFactory.Get<Account>().GetAllEntriesAsync(new Dictionary<string, dynamic>()
+        return (await dataContextFactory.Get<Account>().GetAllEntriesAsync(new Dictionary<string, dynamic?>()
         {
             {"Name", account.Name}
         })).Any();

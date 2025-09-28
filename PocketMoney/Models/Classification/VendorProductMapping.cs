@@ -2,7 +2,7 @@
 
 namespace PocketMoney.Models.Classification;
 
-[SqlData("PocketMoney", "VendorProductMappings", "VendorProductMappingId")]
+[SqlData("VendorProductMappings", "VendorProductMappingId")]
 public class VendorProductMapping
 {
     public int VendorProductMappingId { get; set; }

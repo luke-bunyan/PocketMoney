@@ -1,5 +1,8 @@
-﻿namespace PocketMoney.Models.Accounting;
+﻿using PocketMoney.Integrations.Persistance;
 
+namespace PocketMoney.Models.Accounting;
+
+[SqlData("Allocations", "AllocationId")]
 public class Allocation
 {
     public int AllocationId { get; set; }
